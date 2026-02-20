@@ -1,0 +1,70 @@
+# ============================================================
+# FinanceCmd — Root .gitignore
+# ============================================================
+
+# --- Secrets (never commit these) ---
+.env
+.env.*
+!.env.example
+
+# --- TLS certificates ---
+server/certs/*.key
+server/certs/*.cert
+server/certs/*.pem
+server/certs/*.csr
+
+# --- Database files ---
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+server/prisma/dev.db
+server/prisma/migrations/
+
+# --- Dependencies ---
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# --- Build output ---
+dist/
+client/dist/
+out/
+*.tsbuildinfo
+
+# --- Logs ---
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# --- Coverage ---
+coverage/
+*.lcov
+
+# --- Caches ---
+.cache/
+.eslintcache
+.vite/
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+# --- Editor ---
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# --- Test artifacts ---
+test-login.json
+*.test-output.json
+
+# --- Claude Code ---
+.claude/

@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  accounts  Account[]
+  budgets   Budget[]
+  scenarios Scenario[]
+  snapshots FinancialSnapshot[]
+  apiKeys   ApiKey[]
+}
+
+model Account {
+  id             String  @id @default(uuid())
+  userId         String
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  institution    String
+  type           String
+  subtype        String?
+  balance        Float   @default(0)
+  creditLimit    Float?
+  interestRate   Float?
+  minimumPayment Float?
+  accountNumber  String?
+  isActive       Boolean @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  transactions Transaction[]
+  debts        Debt[]
+  investments  Investment[]
+
+  @@index([userId])
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  accountId   String
+  account     Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  date        DateTime
+  description String
+  amount      Float
+  category    String   @default("Uncategorized")
+  subcategory String?
+  type        String
+  isRecurring Boolean  @default(false)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([accountId])
+  @@index([date])
+  @@index([category])
+}
+
+model Debt {
+  id              String   @id @default(uuid())
+  accountId       String
+  account         Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  name            String
+  originalBalance Float
+  currentBalance  Float
+  interestRate    Float
+  minimumPayment  Float
+  dueDate         Int?
+  startDate       DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([accountId])
+}
+
+model Investment {
+  id                  String  @id @default(uuid())
+  accountId           String
+  account             Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  name                String
+  currentValue        Float
+  costBasis           Float?
+  monthlyContribution Float   @default(0)
+  employerMatch       Float?
+  returnRate          Float?
+  allocations         String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([accountId])
+}
+
+model Budget {
+  id       String @id @default(uuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category String
+  amount   Float
+  period   String @default("monthly")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Scenario {
+  id          String  @id @default(uuid())
+  userId      String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  parameters  String
+  results     String?
+  type        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model FinancialSnapshot {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date             DateTime
+  totalAssets      Float
+  totalLiabilities Float
+  netWorth         Float
+  totalIncome      Float
+  totalExpenses    Float
+  savingsRate      Float
+  debtToIncome     Float
+  data             String?
+  createdAt        DateTime @default(now())
+
+  @@index([userId])
+  @@index([date])
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  action     String
+  resource   String
+  resourceId String?
+  details    String?
+  ipAddress  String?
+  userAgent  String?
+  requestId  String?
+  status     Int      @default(200)
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([resource])
+  @@index([createdAt])
+}
+
+model ApiKey {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  keyHash     String    @unique
+  keyPrefix   String
+  permissions String    @default("read")
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([keyHash])
+}
+
+model LoginAttempt {
+  id        String   @id @default(uuid())
+  email     String
+  ipAddress String?
+  userAgent String?
+  success   Boolean
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([createdAt])
+}
