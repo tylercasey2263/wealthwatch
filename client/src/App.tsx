@@ -14,6 +14,7 @@ import { Reports } from './pages/Reports';
 import { Import } from './pages/Import';
 import { Docs } from './pages/Docs';
 import { Settings } from './pages/Settings';
+import { Goals } from './pages/Goals';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -40,6 +41,7 @@ function AppRoutes() {
       <Route path="/debts" element={<ProtectedRoute><Debts /></ProtectedRoute>} />
       <Route path="/investments" element={<ProtectedRoute><Investments /></ProtectedRoute>} />
       <Route path="/budgets" element={<ProtectedRoute><Budgets /></ProtectedRoute>} />
+      <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
       <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
       <Route path="/import" element={<ProtectedRoute><Import /></ProtectedRoute>} />
       <Route path="/docs" element={<ProtectedRoute><Docs /></ProtectedRoute>} />

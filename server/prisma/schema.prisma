@@ -18,9 +18,27 @@ model User {
 
   accounts  Account[]
   budgets   Budget[]
+  goals     Goal[]
   scenarios Scenario[]
   snapshots FinancialSnapshot[]
   apiKeys   ApiKey[]
+}
+
+model Goal {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String
+  type          String    // 'debt_free' | 'savings' | 'emergency_fund' | 'investment' | 'custom'
+  targetAmount  Float?
+  currentAmount Float     @default(0)
+  targetDate    DateTime?
+  notes         String?
+  isCompleted   Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([userId])
 }
 
 model Account {

@@ -21,6 +21,7 @@ import importRoutes from './routes/import.ts';
 import apiKeyRoutes from './routes/apiKeys.ts';
 import adminRoutes from './routes/admin.ts';
 import plaidRoutes from './routes/plaid.ts';
+import goalsRoutes from './routes/goals.ts';
 import { rateLimit } from './middleware/rateLimiter.ts';
 import { csrfProtection, sanitizeInput, additionalSecurityHeaders, requestId } from './middleware/security.ts';
 import { auditLog } from './middleware/audit.ts';
@@ -153,6 +154,7 @@ app.use('/api/import', importRoutes);
 app.use('/api/api-keys', apiKeyRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/plaid', plaidRoutes);
+app.use('/api/goals', goalsRoutes);
 
 // === Serve built client (production mode) ===
 const clientDistPath = path.join(import.meta.dir, '..', '..', 'client', 'dist');

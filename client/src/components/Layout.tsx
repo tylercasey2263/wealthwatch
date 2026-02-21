@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { LayoutDashboard, Wallet, ArrowLeftRight, CreditCard, TrendingUp, Target, LogOut, Menu, X, DollarSign, FileBarChart, Upload, BookOpen, Settings, Moon, Sun } from 'lucide-react';
+import { LayoutDashboard, Wallet, ArrowLeftRight, CreditCard, TrendingUp, Target, LogOut, Menu, X, DollarSign, FileBarChart, Upload, BookOpen, Settings, Moon, Sun, Flag } from 'lucide-react';
 import { Button } from './ui/button';
 import { useState } from 'react';
 
@@ -12,6 +12,7 @@ const navItems = [
   { path: '/debts', label: 'Debts', icon: CreditCard },
   { path: '/investments', label: 'Investments', icon: TrendingUp },
   { path: '/budgets', label: 'Budgets', icon: Target },
+  { path: '/goals', label: 'Goals', icon: Flag },
   { path: '/reports', label: 'Reports', icon: FileBarChart },
   { path: '/import', label: 'Import', icon: Upload },
   { path: '/docs', label: 'Docs', icon: BookOpen },

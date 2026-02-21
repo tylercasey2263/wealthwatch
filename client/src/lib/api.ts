@@ -125,6 +125,14 @@ export const api = {
   changePassword: (currentPassword: string, newPassword: string) =>
     request<{ message: string }>('/auth/change-password', { method: 'POST', body: JSON.stringify({ currentPassword, newPassword }) }),
 
+  // Goals
+  getGoals: () => request<{ goals: Goal[] }>('/goals'),
+  createGoal: (data: Partial<Goal>) =>
+    request<{ goal: Goal }>('/goals', { method: 'POST', body: JSON.stringify(data) }),
+  updateGoal: (id: string, data: Partial<Goal>) =>
+    request<{ goal: Goal }>(`/goals/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteGoal: (id: string) => request(`/goals/${id}`, { method: 'DELETE' }),
+
   // Plaid
   getPlaidStatus: () => request<{ configured: boolean; environment: string }>('/plaid/status'),
   createPlaidLinkToken: () => request<{ linkToken: string }>('/plaid/link-token', { method: 'POST' }),
@@ -205,6 +213,13 @@ export interface AuditLogEntry {
 export interface LoginAttemptEntry {
   id: string; email: string; ipAddress: string | null; userAgent: string | null;
   success: boolean; reason: string | null; createdAt: string;
+}
+export interface Goal {
+  id: string; userId: string; title: string;
+  type: 'debt_free' | 'savings' | 'emergency_fund' | 'investment' | 'custom';
+  targetAmount?: number | null; currentAmount: number;
+  targetDate?: string | null; notes?: string | null;
+  isCompleted: boolean; createdAt: string; updatedAt: string;
 }
 export interface SecurityStatus {
   activeApiKeys: number; recentFailedLogins: number; recentAuditActions: number;

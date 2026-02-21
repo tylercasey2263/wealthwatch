@@ -7,7 +7,7 @@ import { Input } from '../components/ui/input';
 import { Select } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
 import { formatCurrency } from '../lib/utils';
-import { Plus, X, CreditCard, Calculator, TrendingDown } from 'lucide-react';
+import { Plus, X, CreditCard, Calculator, TrendingDown, ChevronDown, ChevronUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 export function Debts() {
@@ -18,6 +18,8 @@ export function Debts() {
   const [showCalculator, setShowCalculator] = useState(false);
   const [extraPayment, setExtraPayment] = useState(0);
   const [comparison, setComparison] = useState<DebtCompareResult | null>(null);
+  const [showSchedule, setShowSchedule] = useState(false);
+  const [showChart, setShowChart] = useState(false);
   const [form, setForm] = useState({ accountId: '', name: '', originalBalance: '', currentBalance: '', interestRate: '', minimumPayment: '' });
 
   useEffect(() => {
@@ -53,6 +55,24 @@ export function Debts() {
   const totalDebt = debts.reduce((s, d) => s + d.currentBalance, 0);
   const totalMinimum = debts.reduce((s, d) => s + d.minimumPayment, 0);
 
+  // Derived from comparison result
+  const attackDebtId = comparison?.avalanche.debtPayoffOrder[0]?.id;
+  const attackDebt = attackDebtId ? debts.find(d => d.id === attackDebtId) : null;
+  const minimumDebts = comparison ? debts.filter(d => d.id !== attackDebtId) : [];
+
+  // Month 1 payment breakdown from avalanche schedule
+  const month1Debts = comparison?.avalanche.schedule[0]?.debts ?? [];
+  const attackMonth1 = month1Debts.find((m: any) => m.id === attackDebtId);
+  const attackMinimum = attackDebt?.minimumPayment ?? 0;
+  const attackExtra = attackMonth1 ? Math.max(0, attackMonth1.payment - attackMinimum) : extraPayment;
+
+  // Payoff date
+  const payoffDate = comparison ? (() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() + comparison.avalanche.months);
+    return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  })() : null;
+
   if (loading) return <div className="flex items-center justify-center h-64">Loading debts...</div>;
 
   return (
@@ -62,7 +82,7 @@ export function Debts() {
         <div className="flex gap-2">
           {debts.length > 0 && (
             <Button variant="outline" onClick={() => setShowCalculator(!showCalculator)}>
-              <Calculator className="h-4 w-4 mr-2" />{showCalculator ? 'Hide Calculator' : 'Payoff Calculator'}
+              <Calculator className="h-4 w-4 mr-2" />{showCalculator ? 'Hide Plan' : 'Payoff Plan'}
             </Button>
           )}
           <Button onClick={() => setShowForm(!showForm)}>
@@ -77,91 +97,142 @@ export function Debts() {
         <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Number of Debts</p><p className="text-2xl font-bold">{debts.length}</p></CardContent></Card>
       </div>
 
-      {/* Payoff Calculator */}
+      {/* Payoff Action Plan */}
       {showCalculator && comparison && (
         <div className="space-y-4">
-          <Card>
-            <CardHeader><CardTitle className="text-lg flex items-center gap-2"><TrendingDown className="h-5 w-5" />Debt Payoff Calculator</CardTitle></CardHeader>
+          <Card className="border-2 border-blue-500 dark:border-blue-400">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <TrendingDown className="h-5 w-5 text-blue-500 dark:text-blue-400" />
+                Your Debt Payoff Action Plan
+              </CardTitle>
+            </CardHeader>
             <CardContent className="space-y-6">
+              {/* Extra payment slider */}
               <div>
                 <label className="text-sm font-medium block mb-2">Extra Monthly Payment: {formatCurrency(extraPayment)}</label>
-                <input type="range" min="0" max="2000" step="25" value={extraPayment} onChange={(e) => setExtraPayment(parseInt(e.target.value))}
+                <input type="range" min="0" max="2000" step="25" value={extraPayment}
+                  onChange={(e) => setExtraPayment(parseInt(e.target.value))}
                   className="w-full h-2 bg-[hsl(var(--secondary))] rounded-lg appearance-none cursor-pointer" />
                 <div className="flex justify-between text-xs text-[hsl(var(--muted-foreground))] mt-1">
                   <span>$0</span><span>$500</span><span>$1,000</span><span>$1,500</span><span>$2,000</span>
                 </div>
               </div>
 
-              {/* Strategy Comparison */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="border-2 border-blue-500 dark:border-blue-400">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold text-blue-600 dark:text-blue-400">Avalanche Method</h4>
-                      <Badge variant="default">Recommended</Badge>
-                    </div>
-                    <p className="text-xs text-[hsl(var(--muted-foreground))] mb-3">Pay highest interest rate first</p>
-                    <div className="space-y-2">
-                      <div className="flex justify-between"><span className="text-sm">Payoff Time</span><span className="font-semibold">{Math.floor(comparison.avalanche.months / 12)}y {comparison.avalanche.months % 12}m</span></div>
-                      <div className="flex justify-between"><span className="text-sm">Total Interest</span><span className="font-semibold text-red-600 dark:text-red-400">{formatCurrency(comparison.avalanche.totalInterest)}</span></div>
-                      <div className="flex justify-between"><span className="text-sm">Total Paid</span><span className="font-semibold">{formatCurrency(comparison.avalanche.totalPaid)}</span></div>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-4">
-                    <h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Snowball Method</h4>
-                    <p className="text-xs text-[hsl(var(--muted-foreground))] mb-3">Pay lowest balance first</p>
-                    <div className="space-y-2">
-                      <div className="flex justify-between"><span className="text-sm">Payoff Time</span><span className="font-semibold">{Math.floor(comparison.snowball.months / 12)}y {comparison.snowball.months % 12}m</span></div>
-                      <div className="flex justify-between"><span className="text-sm">Total Interest</span><span className="font-semibold text-red-600 dark:text-red-400">{formatCurrency(comparison.snowball.totalInterest)}</span></div>
-                      <div className="flex justify-between"><span className="text-sm">Total Paid</span><span className="font-semibold">{formatCurrency(comparison.snowball.totalPaid)}</span></div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              <p className="text-sm text-[hsl(var(--muted-foreground))]">
+                Using <span className="font-semibold text-blue-600 dark:text-blue-400">Avalanche strategy</span> (highest interest rate first — saves the most money)
+              </p>
 
-              {comparison.interestSaved > 0 && (
-                <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg text-center">
-                  <p className="text-sm text-blue-800 dark:text-blue-200">
-                    Avalanche saves <span className="font-bold">{formatCurrency(comparison.interestSaved)}</span> in interest
-                    {comparison.monthsSaved > 0 && <> and <span className="font-bold">{comparison.monthsSaved} months</span></>} vs. Snowball
+              {/* Attack debt */}
+              {attackDebt && (
+                <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-blue-600 dark:text-blue-400 font-bold text-sm">🎯 ATTACK THIS DEBT FIRST:</span>
+                    <Badge variant="default" className="bg-blue-600 text-xs">Focus here</Badge>
+                  </div>
+                  <p className="font-semibold text-lg">{attackDebt.name} — {attackDebt.interestRate}% APR</p>
+                  <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">
+                    Pay: <span className="font-medium text-[hsl(var(--foreground))]">{formatCurrency(attackMinimum)}</span> minimum
+                    {extraPayment > 0 && <> + <span className="font-bold text-blue-600 dark:text-blue-400">{formatCurrency(attackExtra)}</span> extra = <span className="font-bold">{formatCurrency(attackMinimum + attackExtra)}</span> this month</>}
                   </p>
+                  <p className="text-xs text-[hsl(var(--muted-foreground))] mt-1">Balance: {formatCurrency(attackDebt.currentBalance)}</p>
                 </div>
               )}
 
-              {/* Balance Over Time Chart */}
-              <div>
-                <h4 className="font-semibold mb-2">Balance Over Time</h4>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" type="number" domain={[0, 'dataMax']} label={{ value: 'Months', position: 'bottom' }} />
-                    <YAxis tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip formatter={(v: number | undefined) => formatCurrency(v ?? 0)} labelFormatter={(l) => `Month ${l}`} />
-                    <Legend />
-                    <Line data={comparison.avalanche.schedule} dataKey="totalBalance" stroke="#3b82f6" name="Avalanche" dot={false} strokeWidth={2} />
-                    <Line data={comparison.snowball.schedule} dataKey="totalBalance" stroke="#22c55e" name="Snowball" dot={false} strokeWidth={2} />
-                  </LineChart>
-                </ResponsiveContainer>
+              {/* Minimum only debts */}
+              {minimumDebts.length > 0 && (
+                <div className="p-4 bg-[hsl(var(--secondary))] rounded-lg">
+                  <p className="font-semibold text-sm mb-2">✅ PAY MINIMUM ONLY ON THESE:</p>
+                  <div className="space-y-1.5">
+                    {minimumDebts.map(d => (
+                      <div key={d.id} className="flex justify-between items-center text-sm">
+                        <span>{d.name}</span>
+                        <span className="font-medium">{formatCurrency(d.minimumPayment)}/mo</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Summary stats */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="text-center p-3 bg-[hsl(var(--secondary))] rounded-lg">
+                  <p className="text-xs text-[hsl(var(--muted-foreground))] mb-1">📅 Debt-free by</p>
+                  <p className="font-bold">{payoffDate}</p>
+                  <p className="text-xs text-[hsl(var(--muted-foreground))]">({comparison.avalanche.months} months)</p>
+                </div>
+                <div className="text-center p-3 bg-[hsl(var(--secondary))] rounded-lg">
+                  <p className="text-xs text-[hsl(var(--muted-foreground))] mb-1">💰 Total interest</p>
+                  <p className="font-bold text-red-600 dark:text-red-400">{formatCurrency(comparison.avalanche.totalInterest)}</p>
+                </div>
+                {comparison.interestSaved > 0 && (
+                  <div className="text-center p-3 bg-green-50 dark:bg-green-950/30 rounded-lg">
+                    <p className="text-xs text-[hsl(var(--muted-foreground))] mb-1">💡 vs. Snowball saves</p>
+                    <p className="font-bold text-green-600 dark:text-green-400">{formatCurrency(comparison.interestSaved)}</p>
+                    {comparison.monthsSaved > 0 && <p className="text-xs text-[hsl(var(--muted-foreground))]">&amp; {comparison.monthsSaved} months</p>}
+                  </div>
+                )}
               </div>
 
-              {/* Payoff Order */}
+              {/* Collapsible month-by-month schedule */}
               <div>
-                <h4 className="font-semibold mb-2">Payoff Order (Avalanche)</h4>
-                <div className="space-y-2">
-                  {comparison.avalanche.debtPayoffOrder.map((d, i) => (
-                    <div key={d.id} className="flex items-center justify-between p-3 bg-[hsl(var(--secondary))] rounded-md">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center">{i + 1}</span>
-                        <span className="font-medium">{d.name}</span>
-                      </div>
-                      <span className="text-sm text-[hsl(var(--muted-foreground))]">
-                        Paid off in {Math.floor(d.payoffMonth / 12)}y {d.payoffMonth % 12}m
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                <button
+                  className="flex items-center gap-2 text-sm font-medium text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors"
+                  onClick={() => setShowSchedule(s => !s)}
+                >
+                  {showSchedule ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  Month-by-Month Schedule (first 6 months)
+                </button>
+                {showSchedule && (
+                  <div className="mt-3 overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left text-xs text-[hsl(var(--muted-foreground))] border-b">
+                          <th className="pb-1 pr-4">Month</th>
+                          <th className="pb-1 pr-4">Balance</th>
+                          <th className="pb-1 pr-4">Payment</th>
+                          <th className="pb-1">Interest</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {comparison.avalanche.schedule.slice(0, 6).map(row => (
+                          <tr key={row.month} className="border-b border-[hsl(var(--border))]">
+                            <td className="py-1.5 pr-4 font-medium">{row.month}</td>
+                            <td className="py-1.5 pr-4">{formatCurrency(row.totalBalance)}</td>
+                            <td className="py-1.5 pr-4">{formatCurrency(row.totalPayment)}</td>
+                            <td className="py-1.5 text-red-600 dark:text-red-400">{formatCurrency(row.totalInterest)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+              {/* Collapsible balance chart */}
+              <div>
+                <button
+                  className="flex items-center gap-2 text-sm font-medium text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors"
+                  onClick={() => setShowChart(s => !s)}
+                >
+                  {showChart ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  Balance Over Time Chart
+                </button>
+                {showChart && (
+                  <div className="mt-3">
+                    <ResponsiveContainer width="100%" height={280}>
+                      <LineChart>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" type="number" domain={[0, 'dataMax']} label={{ value: 'Months', position: 'bottom' }} />
+                        <YAxis tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
+                        <Tooltip formatter={(v: number | undefined) => formatCurrency(v ?? 0)} labelFormatter={(l) => `Month ${l}`} />
+                        <Legend />
+                        <Line data={comparison.avalanche.schedule} dataKey="totalBalance" stroke="#3b82f6" name="Avalanche" dot={false} strokeWidth={2} />
+                        <Line data={comparison.snowball.schedule} dataKey="totalBalance" stroke="#22c55e" name="Snowball" dot={false} strokeWidth={2} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

@@ -49,7 +49,7 @@ export function Login() {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Password</label>
-              <Input type="password" placeholder="password123" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <Input type="password" placeholder="Password1!" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
-import type { DashboardSummary, CategorySpending, MonthlyTrend } from '../lib/api';
+import type { DashboardSummary, CategorySpending, MonthlyTrend, Debt } from '../lib/api';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { formatCurrency, formatPercent } from '../lib/utils';
 import { TrendingUp, TrendingDown, DollarSign, CreditCard, PiggyBank, BarChart3 } from 'lucide-react';
@@ -15,11 +15,22 @@ export function Dashboard() {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [categories, setCategories] = useState<CategorySpending[]>([]);
   const [trend, setTrend] = useState<MonthlyTrend[]>([]);
+  const [debts, setDebts] = useState<Debt[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([api.getDashboardSummary(), api.getSpendingByCategory(), api.getMonthlyTrend(6)])
-      .then(([s, c, t]) => { setSummary(s.summary); setCategories(c.categories); setTrend(t.trend); })
+    Promise.all([
+      api.getDashboardSummary(),
+      api.getSpendingByCategory(),
+      api.getMonthlyTrend(6),
+      api.getDebts(),
+    ])
+      .then(([s, c, t, d]) => {
+        setSummary(s.summary);
+        setCategories(c.categories);
+        setTrend(t.trend);
+        setDebts(d.debts);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -36,6 +47,66 @@ export function Dashboard() {
     { label: 'Investments', value: formatCurrency(summary.totalInvestments), icon: BarChart3, color: 'text-blue-600 dark:text-blue-400' },
   ];
 
+  // Build narrative cards
+  const narrativeCards: { emoji: string; title: string; body: string; accent: string }[] = [];
+
+  if (debts.length > 0) {
+    // Lowest balance debt = first win
+    const firstWin = [...debts].sort((a, b) => a.currentBalance - b.currentBalance)[0];
+    const monthsToPayoff = firstWin.minimumPayment > 0
+      ? Math.ceil(firstWin.currentBalance / firstWin.minimumPayment)
+      : null;
+    narrativeCards.push({
+      emoji: '🔥',
+      title: 'Next Win',
+      body: monthsToPayoff !== null
+        ? `${firstWin.name} paid off in ~${monthsToPayoff} month${monthsToPayoff !== 1 ? 's' : ''} — your first debt gone!`
+        : `${firstWin.name} (${formatCurrency(firstWin.currentBalance)}) is your smallest debt — target it first.`,
+      accent: 'border-orange-400 dark:border-orange-500',
+    });
+
+    // Debt freedom projection
+    const totalMin = debts.reduce((s, d) => s + d.minimumPayment, 0);
+    const avgRate = debts.reduce((s, d) => s + d.interestRate, 0) / debts.length;
+    const roughMonths = avgRate > 0 ? Math.ceil(summary.totalDebt / (totalMin * 0.8)) : Math.ceil(summary.totalDebt / totalMin);
+    const extraScenarioMonths = Math.ceil(roughMonths * 0.7);
+    narrativeCards.push({
+      emoji: '📅',
+      title: 'Debt Freedom',
+      body: `At minimums, roughly debt-free in ${roughMonths} months. Adding $200/mo could cut it to ~${extraScenarioMonths} months. Open Payoff Plan to see your exact date.`,
+      accent: 'border-blue-400 dark:border-blue-500',
+    });
+  }
+
+  if (summary.monthlyIncome > 0) {
+    const rate = summary.savingsRate;
+    const aboveBelow = rate >= 20 ? 'above' : 'below';
+    const tip = rate >= 20
+      ? 'Great work — keep it up!'
+      : `Try to close the gap by trimming expenses or boosting income.`;
+    narrativeCards.push({
+      emoji: '💰',
+      title: 'Savings Rate',
+      body: `You're saving ${formatPercent(rate)} of income — ${aboveBelow} the recommended 20%. ${tip}`,
+      accent: rate >= 20 ? 'border-green-400 dark:border-green-500' : 'border-yellow-400 dark:border-yellow-500',
+    });
+  }
+
+  if (summary.monthlyExpenses > 0) {
+    const monthsCovered = summary.totalInvestments > 0
+      ? (summary.totalInvestments / summary.monthlyExpenses)
+      : 0;
+    const coverageText = monthsCovered >= 6
+      ? `You have ${monthsCovered.toFixed(1)} months covered — great position!`
+      : `Goal: 6 months. You currently have ${monthsCovered.toFixed(1)} months. Consider building your emergency fund.`;
+    narrativeCards.push({
+      emoji: '🏦',
+      title: 'Emergency Fund',
+      body: coverageText,
+      accent: monthsCovered >= 6 ? 'border-green-400 dark:border-green-500' : 'border-purple-400 dark:border-purple-500',
+    });
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -43,6 +114,27 @@ export function Dashboard() {
         <p className="text-[hsl(var(--muted-foreground))]">Your financial overview at a glance</p>
       </div>
 
+      {/* Financial Story — hero section */}
+      {narrativeCards.length > 0 && (
+        <div>
+          <h2 className="text-lg font-semibold mb-3">Your Financial Picture</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {narrativeCards.map(card => (
+              <Card key={card.title} className={`border-l-4 ${card.accent}`}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xl">{card.emoji}</span>
+                    <span className="font-semibold text-sm">{card.title}</span>
+                  </div>
+                  <p className="text-sm text-[hsl(var(--muted-foreground))] leading-relaxed">{card.body}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Stat cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {statCards.map((stat) => {
           const Icon = stat.icon;
