@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import confetti from 'canvas-confetti';
 import { api } from '../lib/api';
 import type { Goal, DebtCompareResult } from '../lib/api';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
@@ -100,8 +101,19 @@ export function Goals() {
     fetchGoals();
   };
 
+  const celebrate = useCallback(() => {
+    const fire = (opts: confetti.Options) =>
+      confetti({ zIndex: 9999, ...opts });
+
+    fire({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+    setTimeout(() => fire({ particleCount: 40, spread: 120, origin: { x: 0.1, y: 0.55 } }), 150);
+    setTimeout(() => fire({ particleCount: 40, spread: 120, origin: { x: 0.9, y: 0.55 } }), 300);
+  }, []);
+
   const handleToggleComplete = async (goal: Goal) => {
-    await api.updateGoal(goal.id, { isCompleted: !goal.isCompleted });
+    const completing = !goal.isCompleted;
+    await api.updateGoal(goal.id, { isCompleted: completing });
+    if (completing) celebrate();
     fetchGoals();
   };
 

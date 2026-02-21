@@ -80,7 +80,7 @@ function OverviewSection() {
           <li><strong>Transaction Tracking</strong> — Categorize and search transactions with filters by account, category, type, and date range</li>
           <li><strong>Debt Action Plan</strong> — Clear "what to do this month" instructions: which debt to attack, how much to pay, and minimum-only debts — with a live extra-payment slider and month-by-month schedule</li>
           <li><strong>Budget Drill-Down with History</strong> — Navigate any past month with arrow controls, click a budget category to expand a 6-month spending trend chart and the full transaction list for that month</li>
-          <li><strong>Goals &amp; Plan</strong> — Set financial milestones (debt-free date, savings targets, emergency fund, investment milestones) with progress bars and target date tracking; debt-free goals auto-fetch the projected payoff date</li>
+          <li><strong>Goals &amp; Plan</strong> — Set financial milestones (debt-free date, savings targets, emergency fund, investment milestones) with progress bars and target date tracking; debt-free goals auto-fetch the projected payoff date; completing a goal fires a confetti celebration</li>
           <li><strong>Investment Projector</strong> — Model growth with Monte Carlo simulation across risk profiles</li>
           <li><strong>Financial Health Score</strong> — Composite 0–100 score based on savings rate, DTI, emergency fund, investments, and credit utilization</li>
           <li><strong>Cash Flow Forecasting</strong> — 30/60/90-day balance projection based on recurring transactions</li>
@@ -445,7 +445,7 @@ function FeaturesSection() {
             <li><strong>🏦 Emergency Fund / 💰 Savings Target / 📈 Investment Milestone</strong> — progress bar from currentAmount to targetAmount</li>
             <li><strong>🎯 Custom</strong> — any other target with optional amount and date</li>
           </ul>
-          <p className="mt-2">Click the circle icon to mark a goal complete. Completed goals move to a separate "Completed" section with a strikethrough title. Edit or delete from the card action buttons.</p>
+          <p className="mt-2">Click the circle icon to mark a goal complete — a confetti burst fires to celebrate. Completed goals move to a separate "Completed" section with a strikethrough title. Clicking the checkmark again moves the goal back to active. Edit or delete from the card action buttons.</p>
         </>
       ),
     },
