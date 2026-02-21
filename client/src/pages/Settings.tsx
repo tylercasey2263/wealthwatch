@@ -67,7 +67,7 @@ function SecurityDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4 text-center">
-            <Shield className={`h-8 w-8 mx-auto mb-2 ${status.encryptionEnabled ? 'text-green-600' : 'text-red-600'}`} />
+            <Shield className={`h-8 w-8 mx-auto mb-2 ${status.encryptionEnabled ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`} />
             <p className="text-sm font-medium">Encryption</p>
             <Badge variant={status.encryptionEnabled ? 'success' : 'destructive'}>
               {status.encryptionEnabled ? 'Enabled' : 'Disabled'}
@@ -76,21 +76,21 @@ function SecurityDashboard() {
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <Key className="h-8 w-8 mx-auto mb-2 text-blue-600" />
+            <Key className="h-8 w-8 mx-auto mb-2 text-blue-600 dark:text-blue-400" />
             <p className="text-sm font-medium">Active API Keys</p>
             <p className="text-2xl font-bold">{status.activeApiKeys}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <AlertTriangle className={`h-8 w-8 mx-auto mb-2 ${status.recentFailedLogins > 0 ? 'text-yellow-600' : 'text-green-600'}`} />
+            <AlertTriangle className={`h-8 w-8 mx-auto mb-2 ${status.recentFailedLogins > 0 ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'}`} />
             <p className="text-sm font-medium">Failed Logins (24h)</p>
             <p className="text-2xl font-bold">{status.recentFailedLogins}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <Activity className="h-8 w-8 mx-auto mb-2 text-purple-600" />
+            <Activity className="h-8 w-8 mx-auto mb-2 text-purple-600 dark:text-purple-400" />
             <p className="text-sm font-medium">Audit Actions (24h)</p>
             <p className="text-2xl font-bold">{status.recentAuditActions}</p>
           </CardContent>
@@ -105,9 +105,9 @@ function SecurityDashboard() {
             {status.recommendations.map((rec, i) => (
               <li key={i} className="flex items-start gap-2">
                 {rec.includes('good') || rec.includes('passed') ? (
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
                 ) : (
-                  <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5 shrink-0" />
+                  <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 mt-0.5 shrink-0" />
                 )}
                 <span className="text-sm">{rec}</span>
               </li>
@@ -216,15 +216,15 @@ function ApiKeyManager() {
   return (
     <div className="space-y-4">
       {createdKey && (
-        <Card className="border-green-200 bg-green-50">
+        <Card className="border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30">
           <CardContent className="p-4">
             <div className="flex items-start gap-2">
-              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" />
+              <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
               <div className="flex-1">
-                <p className="font-medium text-green-800">API Key Created</p>
-                <p className="text-xs text-green-700 mb-2">Copy this key now — it will not be shown again.</p>
+                <p className="font-medium text-green-800 dark:text-green-200">API Key Created</p>
+                <p className="text-xs text-green-700 dark:text-green-300 mb-2">Copy this key now — it will not be shown again.</p>
                 <div className="flex items-center gap-2">
-                  <code className="bg-white border rounded px-3 py-1 text-sm font-mono flex-1 break-all">{createdKey}</code>
+                  <code className="bg-[hsl(var(--background))] border rounded px-3 py-1 text-sm font-mono flex-1 break-all">{createdKey}</code>
                   <Button variant="outline" size="sm" onClick={() => copyToClipboard(createdKey)}>
                     <Copy className="h-4 w-4" />
                   </Button>
@@ -237,7 +237,7 @@ function ApiKeyManager() {
       )}
 
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>
+        <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-sm">{error}</div>
       )}
 
       <Card>
@@ -302,7 +302,7 @@ function ApiKeyManager() {
                     )}
                     {k.isActive && (
                       <Button variant="ghost" size="sm" onClick={() => handleRevoke(k.id)}>
-                        <Trash2 className="h-4 w-4 text-red-500" />
+                        <Trash2 className="h-4 w-4 text-red-500 dark:text-red-400" />
                       </Button>
                     )}
                   </div>
@@ -316,7 +316,7 @@ function ApiKeyManager() {
       <Card>
         <CardHeader><CardTitle className="text-lg">API Usage</CardTitle></CardHeader>
         <CardContent className="text-sm space-y-2">
-          <p>Use your API key in the <code className="bg-gray-100 px-1 rounded">X-API-Key</code> header:</p>
+          <p>Use your API key in the <code className="bg-[hsl(var(--muted))] px-1 rounded">X-API-Key</code> header:</p>
           <pre className="bg-gray-900 text-gray-100 p-3 rounded-lg text-xs overflow-x-auto">
 {`curl -H "X-API-Key: fincmd_YOUR_KEY_HERE" \\
      http://localhost:3001/api/accounts`}
@@ -457,12 +457,12 @@ function PasswordChange() {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           {message && (
-            <div className="p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 text-green-700">
+            <div className="p-3 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg flex items-center gap-2 text-green-700 dark:text-green-300">
               <CheckCircle className="h-5 w-5" /><span className="text-sm">{message}</span>
             </div>
           )}
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
+            <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-2 text-red-700 dark:text-red-300">
               <AlertTriangle className="h-5 w-5" /><span className="text-sm">{error}</span>
             </div>
           )}
@@ -502,11 +502,11 @@ function PasswordChange() {
               {passwordRequirements.map((req, i) => (
                 <div key={i} className="flex items-center gap-2 text-xs">
                   {req.test(newPassword) ? (
-                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <CheckCircle className="h-3 w-3 text-green-600 dark:text-green-400" />
                   ) : (
-                    <AlertTriangle className="h-3 w-3 text-red-500" />
+                    <AlertTriangle className="h-3 w-3 text-red-500 dark:text-red-400" />
                   )}
-                  <span className={req.test(newPassword) ? 'text-green-700' : 'text-red-600'}>{req.label}</span>
+                  <span className={req.test(newPassword) ? 'text-green-700 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>{req.label}</span>
                 </div>
               ))}
             </div>

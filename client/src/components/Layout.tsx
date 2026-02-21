@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { LayoutDashboard, Wallet, ArrowLeftRight, CreditCard, TrendingUp, Target, LogOut, Menu, X, DollarSign, FileBarChart, Upload, BookOpen, Settings } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
+import { LayoutDashboard, Wallet, ArrowLeftRight, CreditCard, TrendingUp, Target, LogOut, Menu, X, DollarSign, FileBarChart, Upload, BookOpen, Settings, Moon, Sun } from 'lucide-react';
 import { Button } from './ui/button';
 import { useState } from 'react';
 
@@ -19,6 +20,7 @@ const navItems = [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -69,9 +71,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <p className="font-medium">{user?.firstName} {user?.lastName}</p>
                 <p className="text-xs text-[hsl(var(--muted-foreground))]">{user?.email}</p>
               </div>
-              <Button variant="ghost" size="icon" onClick={handleLogout} title="Logout">
-                <LogOut className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button variant="ghost" size="icon" onClick={toggleTheme} title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
+                  {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                </Button>
+                <Button variant="ghost" size="icon" onClick={handleLogout} title="Logout">
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </aside>

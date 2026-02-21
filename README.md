@@ -30,6 +30,9 @@ A self-hosted personal finance tracker built for privacy. All sensitive financia
 - 90-day cash flow forecast using recurring transaction patterns
 - Financial health score (0–100) with actionable recommendations
 
+**UI**
+- Dark mode toggle in the sidebar — persists across sessions via `localStorage`, respects `prefers-color-scheme` on first visit
+
 **Security**
 - AES-256-GCM encryption for all PII fields at rest
 - Session-based auth with bcrypt (cost 12), account lockout, CSRF protection
@@ -128,7 +131,7 @@ See `server/.env.example` for a full reference. The two required secrets:
 budget-tracker/
 ├── client/                 # React + Vite frontend
 │   ├── src/
-│   │   ├── contexts/       # Auth context
+│   │   ├── contexts/       # Auth + Theme contexts
 │   │   ├── lib/api.ts      # Typed API client
 │   │   └── pages/          # Route-level page components
 │   └── vite.config.ts      # Dev server + proxy config

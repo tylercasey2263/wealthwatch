@@ -111,7 +111,8 @@ budget-tracker/
 │       │   ├── Layout.tsx
 │       │   └── ui/          # shadcn-style components (button, card, input, etc.)
 │       ├── contexts/
-│       │   └── AuthContext.tsx   # useAuth hook, login/logout/register
+│       │   ├── AuthContext.tsx   # useAuth hook, login/logout/register
+│       │   └── ThemeContext.tsx  # useTheme hook, dark/light toggle, localStorage persistence
 │       ├── lib/
 │       │   ├── api.ts            # Typed fetch wrapper + all API calls
 │       │   └── utils.ts

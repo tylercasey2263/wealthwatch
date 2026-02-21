@@ -91,7 +91,7 @@ export function Investments() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Total Portfolio</p><p className="text-2xl font-bold text-green-600">{formatCurrency(totalValue)}</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Total Portfolio</p><p className="text-2xl font-bold text-green-600 dark:text-green-400">{formatCurrency(totalValue)}</p></CardContent></Card>
         <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Monthly Contributions</p><p className="text-2xl font-bold">{formatCurrency(totalContributions)}</p></CardContent></Card>
         <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Annual Contributions</p><p className="text-2xl font-bold">{formatCurrency(totalContributions * 12)}</p></CardContent></Card>
       </div>
@@ -124,17 +124,17 @@ export function Investments() {
               {projection.length > 0 && (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="border-green-200 bg-green-50"><CardContent className="p-4">
-                      <p className="text-sm text-green-800">Projected Value ({projYears}yr)</p>
-                      <p className="text-2xl font-bold text-green-700">{formatCurrency(projection[projection.length - 1]!.balance)}</p>
+                    <Card className="border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30"><CardContent className="p-4">
+                      <p className="text-sm text-green-800 dark:text-green-200">Projected Value ({projYears}yr)</p>
+                      <p className="text-2xl font-bold text-green-700 dark:text-green-300">{formatCurrency(projection[projection.length - 1]!.balance)}</p>
                     </CardContent></Card>
-                    <Card className="border-blue-200 bg-blue-50"><CardContent className="p-4">
-                      <p className="text-sm text-blue-800">Total Contributions</p>
-                      <p className="text-2xl font-bold text-blue-700">{formatCurrency(projection[projection.length - 1]!.contributions)}</p>
+                    <Card className="border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30"><CardContent className="p-4">
+                      <p className="text-sm text-blue-800 dark:text-blue-200">Total Contributions</p>
+                      <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">{formatCurrency(projection[projection.length - 1]!.contributions)}</p>
                     </CardContent></Card>
-                    <Card className="border-purple-200 bg-purple-50"><CardContent className="p-4">
-                      <p className="text-sm text-purple-800">Investment Growth</p>
-                      <p className="text-2xl font-bold text-purple-700">{formatCurrency(projection[projection.length - 1]!.growth)}</p>
+                    <Card className="border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/30"><CardContent className="p-4">
+                      <p className="text-sm text-purple-800 dark:text-purple-200">Investment Growth</p>
+                      <p className="text-2xl font-bold text-purple-700 dark:text-purple-300">{formatCurrency(projection[projection.length - 1]!.growth)}</p>
                     </CardContent></Card>
                   </div>
 
@@ -170,17 +170,17 @@ export function Investments() {
                         </LineChart>
                       </ResponsiveContainer>
                       <div className="grid grid-cols-3 gap-4 mt-4 text-center text-sm">
-                        <div className="p-3 bg-green-50 rounded-lg">
-                          <p className="text-green-800 font-medium">Conservative (5%)</p>
-                          <p className="text-lg font-bold text-green-700">{formatCurrency(monteCarlo[monteCarlo.length - 1]?.conservative.mid || 0)}</p>
+                        <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg">
+                          <p className="text-green-800 dark:text-green-200 font-medium">Conservative (5%)</p>
+                          <p className="text-lg font-bold text-green-700 dark:text-green-300">{formatCurrency(monteCarlo[monteCarlo.length - 1]?.conservative.mid || 0)}</p>
                         </div>
-                        <div className="p-3 bg-blue-50 rounded-lg">
-                          <p className="text-blue-800 font-medium">Moderate (7%)</p>
-                          <p className="text-lg font-bold text-blue-700">{formatCurrency(monteCarlo[monteCarlo.length - 1]?.moderate.mid || 0)}</p>
+                        <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
+                          <p className="text-blue-800 dark:text-blue-200 font-medium">Moderate (7%)</p>
+                          <p className="text-lg font-bold text-blue-700 dark:text-blue-300">{formatCurrency(monteCarlo[monteCarlo.length - 1]?.moderate.mid || 0)}</p>
                         </div>
-                        <div className="p-3 bg-red-50 rounded-lg">
-                          <p className="text-red-800 font-medium">Aggressive (10%)</p>
-                          <p className="text-lg font-bold text-red-700">{formatCurrency(monteCarlo[monteCarlo.length - 1]?.aggressive.mid || 0)}</p>
+                        <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg">
+                          <p className="text-red-800 dark:text-red-200 font-medium">Aggressive (10%)</p>
+                          <p className="text-lg font-bold text-red-700 dark:text-red-300">{formatCurrency(monteCarlo[monteCarlo.length - 1]?.aggressive.mid || 0)}</p>
                         </div>
                       </div>
                     </div>
@@ -227,11 +227,11 @@ export function Investments() {
           <Card key={inv.id}><CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <TrendingUp className="h-5 w-5 text-green-600" />
+                <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
                 <div><h3 className="font-semibold">{inv.name}</h3><p className="text-sm text-[hsl(var(--muted-foreground))]">{inv.account?.institution}</p></div>
               </div>
               <div className="text-right">
-                <p className="text-xl font-bold text-green-600">{formatCurrency(inv.currentValue)}</p>
+                <p className="text-xl font-bold text-green-600 dark:text-green-400">{formatCurrency(inv.currentValue)}</p>
                 <p className="text-sm text-[hsl(var(--muted-foreground))]">{formatCurrency(inv.monthlyContribution)}/mo{inv.employerMatch ? ` + ${inv.employerMatch}% match` : ''}</p>
               </div>
             </div>

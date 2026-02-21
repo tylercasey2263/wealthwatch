@@ -9,11 +9,11 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 function gradeColor(grade: string): string {
   switch (grade) {
-    case 'A': return 'text-green-600';
-    case 'B': return 'text-blue-600';
-    case 'C': return 'text-yellow-600';
-    case 'D': return 'text-orange-600';
-    default: return 'text-red-600';
+    case 'A': return 'text-green-600 dark:text-green-400';
+    case 'B': return 'text-blue-600 dark:text-blue-400';
+    case 'C': return 'text-yellow-600 dark:text-yellow-400';
+    case 'D': return 'text-orange-600 dark:text-orange-400';
+    default: return 'text-red-600 dark:text-red-400';
   }
 }
 
@@ -133,9 +133,9 @@ export function Reports() {
                 {health.recommendations.map((rec, i) => (
                   <li key={i} className="flex items-start gap-3">
                     {rec.includes('Excellent') ? (
-                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
                     ) : (
-                      <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5 shrink-0" />
+                      <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 mt-0.5 shrink-0" />
                     )}
                     <span className="text-sm">{rec}</span>
                   </li>
@@ -174,26 +174,26 @@ export function Reports() {
                 </div>
                 <div className="text-center p-3 bg-[hsl(var(--muted))] rounded-lg">
                   <p className="text-xs text-[hsl(var(--muted-foreground))]">Min Projected</p>
-                  <p className={`text-lg font-bold ${cashFlow.minimumProjectedBalance < 500 ? 'text-red-600' : 'text-green-600'}`}>
+                  <p className={`text-lg font-bold ${cashFlow.minimumProjectedBalance < 500 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
                     {formatCurrency(cashFlow.minimumProjectedBalance)}
                   </p>
                 </div>
                 <div className="text-center p-3 bg-[hsl(var(--muted))] rounded-lg">
                   <p className="text-xs text-[hsl(var(--muted-foreground))]">Recurring Income</p>
-                  <p className="text-lg font-bold text-green-600 flex items-center justify-center gap-1">
+                  <p className="text-lg font-bold text-green-600 dark:text-green-400 flex items-center justify-center gap-1">
                     <TrendingUp className="h-4 w-4" />{cashFlow.recurringIncome.length} sources
                   </p>
                 </div>
                 <div className="text-center p-3 bg-[hsl(var(--muted))] rounded-lg">
                   <p className="text-xs text-[hsl(var(--muted-foreground))]">Recurring Expenses</p>
-                  <p className="text-lg font-bold text-red-600 flex items-center justify-center gap-1">
+                  <p className="text-lg font-bold text-red-600 dark:text-red-400 flex items-center justify-center gap-1">
                     <TrendingDown className="h-4 w-4" />{cashFlow.recurringExpenses.length} bills
                   </p>
                 </div>
               </div>
 
               {cashFlow.lowBalanceAlert && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
+                <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-2 text-red-700 dark:text-red-300">
                   <AlertTriangle className="h-5 w-5" />
                   <span className="text-sm font-medium">Low balance alert: Your projected balance drops below $500 during this period.</span>
                 </div>
@@ -220,17 +220,17 @@ export function Reports() {
           {/* Recurring items */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
-              <CardHeader><CardTitle className="text-lg text-green-700">Recurring Income</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="text-lg text-green-700 dark:text-green-400">Recurring Income</CardTitle></CardHeader>
               <CardContent>
                 {cashFlow.recurringIncome.length === 0 ? (
                   <p className="text-sm text-[hsl(var(--muted-foreground))]">No recurring income detected. Mark transactions as recurring to enable forecasting.</p>
                 ) : (
                   <ul className="space-y-2">
                     {cashFlow.recurringIncome.map((item: any, i: number) => (
-                      <li key={i} className="flex justify-between items-center p-2 rounded bg-green-50">
+                      <li key={i} className="flex justify-between items-center p-2 rounded bg-green-50 dark:bg-green-950/30">
                         <span className="text-sm font-medium">{item.description}</span>
                         <div className="text-right">
-                          <span className="text-sm font-bold text-green-700">{formatCurrency(item.amount)}</span>
+                          <span className="text-sm font-bold text-green-700 dark:text-green-300">{formatCurrency(item.amount)}</span>
                           <p className="text-xs text-[hsl(var(--muted-foreground))]">Day {item.dayOfMonth}</p>
                         </div>
                       </li>
@@ -240,17 +240,17 @@ export function Reports() {
               </CardContent>
             </Card>
             <Card>
-              <CardHeader><CardTitle className="text-lg text-red-700">Recurring Expenses</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="text-lg text-red-700 dark:text-red-400">Recurring Expenses</CardTitle></CardHeader>
               <CardContent>
                 {cashFlow.recurringExpenses.length === 0 ? (
                   <p className="text-sm text-[hsl(var(--muted-foreground))]">No recurring expenses detected. Mark transactions as recurring to enable forecasting.</p>
                 ) : (
                   <ul className="space-y-2">
                     {cashFlow.recurringExpenses.map((item: any, i: number) => (
-                      <li key={i} className="flex justify-between items-center p-2 rounded bg-red-50">
+                      <li key={i} className="flex justify-between items-center p-2 rounded bg-red-50 dark:bg-red-950/30">
                         <span className="text-sm font-medium">{item.description}</span>
                         <div className="text-right">
-                          <span className="text-sm font-bold text-red-700">{formatCurrency(Math.abs(item.amount))}</span>
+                          <span className="text-sm font-bold text-red-700 dark:text-red-300">{formatCurrency(Math.abs(item.amount))}</span>
                           <p className="text-xs text-[hsl(var(--muted-foreground))]">Day {item.dayOfMonth}</p>
                         </div>
                       </li>

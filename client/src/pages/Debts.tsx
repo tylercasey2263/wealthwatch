@@ -72,7 +72,7 @@ export function Debts() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Total Debt</p><p className="text-2xl font-bold text-red-600">{formatCurrency(totalDebt)}</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Total Debt</p><p className="text-2xl font-bold text-red-600 dark:text-red-400">{formatCurrency(totalDebt)}</p></CardContent></Card>
         <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Monthly Minimums</p><p className="text-2xl font-bold">{formatCurrency(totalMinimum)}</p></CardContent></Card>
         <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Number of Debts</p><p className="text-2xl font-bold">{debts.length}</p></CardContent></Card>
       </div>
@@ -94,27 +94,27 @@ export function Debts() {
 
               {/* Strategy Comparison */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="border-2 border-blue-500">
+                <Card className="border-2 border-blue-500 dark:border-blue-400">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold text-blue-600">Avalanche Method</h4>
+                      <h4 className="font-semibold text-blue-600 dark:text-blue-400">Avalanche Method</h4>
                       <Badge variant="default">Recommended</Badge>
                     </div>
                     <p className="text-xs text-[hsl(var(--muted-foreground))] mb-3">Pay highest interest rate first</p>
                     <div className="space-y-2">
                       <div className="flex justify-between"><span className="text-sm">Payoff Time</span><span className="font-semibold">{Math.floor(comparison.avalanche.months / 12)}y {comparison.avalanche.months % 12}m</span></div>
-                      <div className="flex justify-between"><span className="text-sm">Total Interest</span><span className="font-semibold text-red-600">{formatCurrency(comparison.avalanche.totalInterest)}</span></div>
+                      <div className="flex justify-between"><span className="text-sm">Total Interest</span><span className="font-semibold text-red-600 dark:text-red-400">{formatCurrency(comparison.avalanche.totalInterest)}</span></div>
                       <div className="flex justify-between"><span className="text-sm">Total Paid</span><span className="font-semibold">{formatCurrency(comparison.avalanche.totalPaid)}</span></div>
                     </div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardContent className="p-4">
-                    <h4 className="font-semibold text-green-600 mb-2">Snowball Method</h4>
+                    <h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Snowball Method</h4>
                     <p className="text-xs text-[hsl(var(--muted-foreground))] mb-3">Pay lowest balance first</p>
                     <div className="space-y-2">
                       <div className="flex justify-between"><span className="text-sm">Payoff Time</span><span className="font-semibold">{Math.floor(comparison.snowball.months / 12)}y {comparison.snowball.months % 12}m</span></div>
-                      <div className="flex justify-between"><span className="text-sm">Total Interest</span><span className="font-semibold text-red-600">{formatCurrency(comparison.snowball.totalInterest)}</span></div>
+                      <div className="flex justify-between"><span className="text-sm">Total Interest</span><span className="font-semibold text-red-600 dark:text-red-400">{formatCurrency(comparison.snowball.totalInterest)}</span></div>
                       <div className="flex justify-between"><span className="text-sm">Total Paid</span><span className="font-semibold">{formatCurrency(comparison.snowball.totalPaid)}</span></div>
                     </div>
                   </CardContent>
@@ -122,8 +122,8 @@ export function Debts() {
               </div>
 
               {comparison.interestSaved > 0 && (
-                <div className="p-4 bg-blue-50 rounded-lg text-center">
-                  <p className="text-sm text-blue-800">
+                <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg text-center">
+                  <p className="text-sm text-blue-800 dark:text-blue-200">
                     Avalanche saves <span className="font-bold">{formatCurrency(comparison.interestSaved)}</span> in interest
                     {comparison.monthsSaved > 0 && <> and <span className="font-bold">{comparison.monthsSaved} months</span></>} vs. Snowball
                   </p>
@@ -189,11 +189,11 @@ export function Debts() {
           <Card key={d.id}><CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <CreditCard className="h-5 w-5 text-red-600" />
+                <CreditCard className="h-5 w-5 text-red-600 dark:text-red-400" />
                 <div><h3 className="font-semibold">{d.name}</h3><p className="text-sm text-[hsl(var(--muted-foreground))]">{d.account?.institution} &middot; {d.interestRate}% APR</p></div>
               </div>
               <div className="text-right">
-                <p className="text-xl font-bold text-red-600">{formatCurrency(d.currentBalance)}</p>
+                <p className="text-xl font-bold text-red-600 dark:text-red-400">{formatCurrency(d.currentBalance)}</p>
                 <p className="text-sm text-[hsl(var(--muted-foreground))]">Min: {formatCurrency(d.minimumPayment)}/mo</p>
               </div>
             </div>

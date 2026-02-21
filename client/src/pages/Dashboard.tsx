@@ -5,10 +5,13 @@ import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card'
 import { formatCurrency, formatPercent } from '../lib/utils';
 import { TrendingUp, TrendingDown, DollarSign, CreditCard, PiggyBank, BarChart3 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { useTheme } from '../contexts/ThemeContext';
 
 const COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#f97316', '#84cc16', '#6366f1'];
 
 export function Dashboard() {
+  const { theme } = useTheme();
+  const gridStroke = theme === 'dark' ? '#334155' : '#e2e8f0';
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [categories, setCategories] = useState<CategorySpending[]>([]);
   const [trend, setTrend] = useState<MonthlyTrend[]>([]);
@@ -25,12 +28,12 @@ export function Dashboard() {
   if (!summary) return <div className="text-center text-[hsl(var(--muted-foreground))]">Failed to load dashboard</div>;
 
   const statCards = [
-    { label: 'Net Worth', value: formatCurrency(summary.netWorth), icon: DollarSign, color: summary.netWorth >= 0 ? 'text-green-600' : 'text-red-600' },
-    { label: 'Monthly Income', value: formatCurrency(summary.monthlyIncome), icon: TrendingUp, color: 'text-green-600' },
-    { label: 'Monthly Expenses', value: formatCurrency(summary.monthlyExpenses), icon: TrendingDown, color: 'text-red-600' },
-    { label: 'Savings Rate', value: formatPercent(summary.savingsRate), icon: PiggyBank, color: summary.savingsRate >= 20 ? 'text-green-600' : 'text-yellow-600' },
-    { label: 'Total Debt', value: formatCurrency(summary.totalDebt), icon: CreditCard, color: 'text-red-600' },
-    { label: 'Investments', value: formatCurrency(summary.totalInvestments), icon: BarChart3, color: 'text-blue-600' },
+    { label: 'Net Worth', value: formatCurrency(summary.netWorth), icon: DollarSign, color: summary.netWorth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' },
+    { label: 'Monthly Income', value: formatCurrency(summary.monthlyIncome), icon: TrendingUp, color: 'text-green-600 dark:text-green-400' },
+    { label: 'Monthly Expenses', value: formatCurrency(summary.monthlyExpenses), icon: TrendingDown, color: 'text-red-600 dark:text-red-400' },
+    { label: 'Savings Rate', value: formatPercent(summary.savingsRate), icon: PiggyBank, color: summary.savingsRate >= 20 ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400' },
+    { label: 'Total Debt', value: formatCurrency(summary.totalDebt), icon: CreditCard, color: 'text-red-600 dark:text-red-400' },
+    { label: 'Investments', value: formatCurrency(summary.totalInvestments), icon: BarChart3, color: 'text-blue-600 dark:text-blue-400' },
   ];
 
   return (
@@ -65,7 +68,7 @@ export function Dashboard() {
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={trend}>
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip formatter={(value: number | undefined) => formatCurrency(value ?? 0)} />

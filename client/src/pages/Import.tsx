@@ -124,7 +124,7 @@ export function Import() {
       </div>
 
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
+        <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-2 text-red-700 dark:text-red-300">
           <AlertCircle className="h-5 w-5" /><span className="text-sm">{error}</span>
         </div>
       )}
@@ -256,15 +256,15 @@ export function Import() {
       {step === 'result' && result && (
         <Card>
           <CardContent className="p-8 text-center space-y-4">
-            <CheckCircle className="h-16 w-16 text-green-600 mx-auto" />
+            <CheckCircle className="h-16 w-16 text-green-600 dark:text-green-400 mx-auto" />
             <h2 className="text-2xl font-bold">Import Complete</h2>
             <div className="flex justify-center gap-6">
               <div>
-                <p className="text-3xl font-bold text-green-600">{result.imported}</p>
+                <p className="text-3xl font-bold text-green-600 dark:text-green-400">{result.imported}</p>
                 <p className="text-sm text-[hsl(var(--muted-foreground))]">Imported</p>
               </div>
               <div>
-                <p className="text-3xl font-bold text-yellow-600">{result.skipped}</p>
+                <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{result.skipped}</p>
                 <p className="text-sm text-[hsl(var(--muted-foreground))]">Skipped</p>
               </div>
               <div>

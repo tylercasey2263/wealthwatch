@@ -78,7 +78,7 @@ export function Transactions() {
       {showForm && (
         <Card><CardHeader><CardTitle>Add Transaction</CardTitle></CardHeader><CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">{error}</div>}
+            {error && <div className="p-3 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 rounded-md">{error}</div>}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="space-y-2"><label className="text-sm font-medium">Account</label><Select value={form.accountId} onChange={(e) => setForm({ ...form, accountId: e.target.value })} required><option value="">Select account</option>{accounts.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</Select></div>
               <div className="space-y-2"><label className="text-sm font-medium">Date</label><Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required /></div>
@@ -97,8 +97,8 @@ export function Transactions() {
         {transactions.map((t) => (
           <div key={t.id} className="flex items-center justify-between p-4 hover:bg-[hsl(var(--accent))]/50 transition-colors">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-full ${t.amount >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
-                {t.amount >= 0 ? <ArrowUpRight className="h-4 w-4 text-green-600" /> : <ArrowDownRight className="h-4 w-4 text-red-600" />}
+              <div className={`p-2 rounded-full ${t.amount >= 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                {t.amount >= 0 ? <ArrowUpRight className="h-4 w-4 text-green-600 dark:text-green-400" /> : <ArrowDownRight className="h-4 w-4 text-red-600 dark:text-red-400" />}
               </div>
               <div>
                 <p className="font-medium">{t.description}</p>
@@ -109,7 +109,7 @@ export function Transactions() {
             </div>
             <div className="flex items-center gap-3">
               <Badge variant="secondary">{t.category}</Badge>
-              <span className={`font-semibold ${t.amount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <span className={`font-semibold ${t.amount >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                 {t.amount >= 0 ? '+' : ''}{formatCurrency(t.amount)}
               </span>
               <Button variant="ghost" size="sm" onClick={() => handleDelete(t.id)} className="text-[hsl(var(--muted-foreground))] hover:text-red-600"><X className="h-4 w-4" /></Button>

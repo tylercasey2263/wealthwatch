@@ -10,7 +10,7 @@ import { formatCurrency } from '../lib/utils';
 import { Plus, X, Building2, CreditCard, Car, TrendingUp, Banknote } from 'lucide-react';
 
 const typeIcons: Record<string, any> = { bank: Building2, credit_card: CreditCard, loan: Car, investment: TrendingUp, income: Banknote };
-const typeColors: Record<string, string> = { bank: 'text-blue-600', credit_card: 'text-red-600', loan: 'text-orange-600', investment: 'text-green-600', income: 'text-purple-600' };
+const typeColors: Record<string, string> = { bank: 'text-blue-600 dark:text-blue-400', credit_card: 'text-red-600 dark:text-red-400', loan: 'text-orange-600 dark:text-orange-400', investment: 'text-green-600 dark:text-green-400', income: 'text-purple-600 dark:text-purple-400' };
 const institutions = ['USAA', 'Navy Federal', 'Capital One', 'Citibank', 'Bridgecrest', 'Guideline', 'TSP', 'VA', 'Other'];
 
 export function Accounts() {
@@ -68,15 +68,15 @@ export function Accounts() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Total Assets</p><p className="text-2xl font-bold text-green-600">{formatCurrency(totalAssets)}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Total Liabilities</p><p className="text-2xl font-bold text-red-600">{formatCurrency(totalLiabilities)}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Net Worth</p><p className={`text-2xl font-bold ${totalAssets - totalLiabilities >= 0 ? 'text-green-600' : 'text-red-600'}`}>{formatCurrency(totalAssets - totalLiabilities)}</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Total Assets</p><p className="text-2xl font-bold text-green-600 dark:text-green-400">{formatCurrency(totalAssets)}</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Total Liabilities</p><p className="text-2xl font-bold text-red-600 dark:text-red-400">{formatCurrency(totalLiabilities)}</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Net Worth</p><p className={`text-2xl font-bold ${totalAssets - totalLiabilities >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{formatCurrency(totalAssets - totalLiabilities)}</p></CardContent></Card>
       </div>
 
       {showForm && (
         <Card><CardHeader><CardTitle>Add New Account</CardTitle></CardHeader><CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">{error}</div>}
+            {error && <div className="p-3 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 rounded-md">{error}</div>}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2"><label className="text-sm font-medium">Account Name</label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. USAA Checking" required /></div>
               <div className="space-y-2"><label className="text-sm font-medium">Institution</label><Select value={form.institution} onChange={(e) => setForm({ ...form, institution: e.target.value })} required><option value="">Select institution</option>{institutions.map(i => <option key={i} value={i}>{i}</option>)}</Select></div>
@@ -113,7 +113,7 @@ export function Accounts() {
               <div className="mt-4 flex items-end justify-between">
                 <div>
                   <p className="text-sm text-[hsl(var(--muted-foreground))]">Balance</p>
-                  <p className={`text-xl font-bold ${account.balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>{formatCurrency(Math.abs(account.balance))}</p>
+                  <p className={`text-xl font-bold ${account.balance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{formatCurrency(Math.abs(account.balance))}</p>
                 </div>
                 <div className="flex gap-2">
                   {account.interestRate && <span className="text-xs text-[hsl(var(--muted-foreground))]">{account.interestRate}% APR</span>}

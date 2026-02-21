@@ -50,8 +50,8 @@ export function Budgets() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Total Budget</p><p className="text-2xl font-bold">{formatCurrency(totalBudget)}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Total Spent</p><p className="text-2xl font-bold text-red-600">{formatCurrency(totalSpent)}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Remaining</p><p className={`text-2xl font-bold ${totalBudget - totalSpent >= 0 ? 'text-green-600' : 'text-red-600'}`}>{formatCurrency(totalBudget - totalSpent)}</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Total Spent</p><p className="text-2xl font-bold text-red-600 dark:text-red-400">{formatCurrency(totalSpent)}</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-sm text-[hsl(var(--muted-foreground))]">Remaining</p><p className={`text-2xl font-bold ${totalBudget - totalSpent >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{formatCurrency(totalBudget - totalSpent)}</p></CardContent></Card>
       </div>
 
       {showForm && (
@@ -74,7 +74,7 @@ export function Budgets() {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2"><Target className="h-4 w-4 text-[hsl(var(--muted-foreground))]" /><span className="font-medium">{b.category}</span></div>
                 <div className="flex items-center gap-4">
-                  <span className={`text-sm font-medium ${over ? 'text-red-600' : ''}`}>{formatCurrency(spent)} / {formatCurrency(b.amount)}</span>
+                  <span className={`text-sm font-medium ${over ? 'text-red-600 dark:text-red-400' : ''}`}>{formatCurrency(spent)} / {formatCurrency(b.amount)}</span>
                   <Button variant="ghost" size="sm" onClick={() => handleDelete(b.id)} className="text-[hsl(var(--muted-foreground))]"><X className="h-4 w-4" /></Button>
                 </div>
               </div>
